@@ -33,47 +33,56 @@ export const TopList = [
     {
         title: 'Топ 100 популярных фильмов',
         icon: 'AutoAwesome',
-        url: '/popular'
+        url: '/popular',
+        value: 'TOP_POPULAR_MOVIES'
     },
     {
         title: 'Топ 250 лучших фильмов',
         icon: 'StarPurple500',
-        url: '/best'
+        url: '/best',
+        value: 'TOP_250_MOVIES'
     },
     {
         title: 'Вампиры',
         icon: 'Bloodtype',
-        url: '/vampire'
+        url: '/vampire',
+        value: 'VAMPIRE_THEME'
     },
     {
         title: 'Комиксы',
         icon: 'MenuBook',
-        url: '/comics'
+        url: '/comics',
+        value: 'COMICS_THEME'
     },
     {
         title: 'Семейные',
         icon: 'FamilyRestroom',
-        url: '/family'
+        url: '/family',
+        value: 'FAMILY'
     },
     {
         title: 'Романтика',
         icon: 'VolunteerActivism',
-        url: '/romantic'
+        url: '/romantic',
+        value: 'LOVE_THEME'
     },
     {
         title: 'Зомби',
         icon: 'MoodBad',
-        url: '/zombie'
+        url: '/zombie',
+        value: 'ZOMBIE_THEME'
     },
     {
         title: 'Катастрофы',
         icon: 'Pool',
-        url: '/catastrophe'
+        url: '/catastrophe',
+        value: 'CATASTROPHE_THEME'
     },
     {
         title: 'Популярные сериалы',
         icon: 'LiveTv',
-        url: '/popularSerials'
+        url: '/popularSerials',
+        value: 'POPULAR_SERIES'
     },
 ];
 
@@ -81,16 +90,19 @@ export const MovieList = [
     {
         title: 'Фильмы',
         icon: 'LocalMovies',
-        url: '/films'
+        url: '/films',
+        value: ''
     },
     {
         title: 'Сериалы',
         icon: 'Reorder',
-        url: '/serials'
+        url: '/serials',
+        value: ''
     },
     {
         title: 'Мультфильмы',
         icon: 'Fort',
-        url: '/cartoons'
+        url: '/cartoons',
+        value: ''
     },
 ];

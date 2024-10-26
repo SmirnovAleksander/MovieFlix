@@ -5,7 +5,7 @@ export const kinopoiskApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: 'https://kinopoiskapiunofficial.tech/api',
         prepareHeaders: headers => {
-            headers.set('X-API-KEY', )
+            headers.set('X-API-KEY', '879c5663-4b59-4718-b205-6285fa1d4d40')
             headers.set('Content-Type', 'application/json')
         }
     }),

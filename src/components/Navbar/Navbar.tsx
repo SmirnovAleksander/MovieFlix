@@ -12,7 +12,7 @@ import {
 import {useState} from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import {Link as RouterLink} from "react-router-dom";
-import {iconComponents, MovieList, TopList} from "../constants/constants.ts";
+import {iconComponents, MovieList, TopList} from "../../constants/constants.ts";
 interface IconProps {
     iconName: string;
 }

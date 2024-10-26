@@ -3,7 +3,7 @@ import Layout from "./components/Layout";
 import Movies from "./pages/Movies";
 import MovieDetail from "./pages/MovieDetail";
 import ActorDetail from "./pages/ActorDetail";
-import {MovieList, TopList} from "./components/constants/constants.ts";
+import {MovieList, TopList} from "./constants/constants.ts";
 import MoviesListTop from "./pages/MoviesListTop";
 import MoviesListMain from "./pages/MoviesListMain";
 
