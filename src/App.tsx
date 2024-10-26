@@ -6,14 +6,13 @@ import ActorDetail from "./pages/ActorDetail";
 import {MovieList, TopList} from "./components/constants/constants.ts";
 import MoviesListTop from "./pages/MoviesListTop";
 import MoviesListMain from "./pages/MoviesListMain";
-import ErrorPage from "./pages/ErrorPage";
 
 const App = () => {
     const router = createBrowserRouter([
         {
             path: "/",
             element: <Layout/>,
-            errorElement: <ErrorPage/>,
+            // errorElement: <ErrorPage/>,
             children: [
                 {
                     path: "/",
