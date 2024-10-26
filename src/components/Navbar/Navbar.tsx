@@ -1,25 +1,69 @@
 import {
     AppBar,
-    Box,
-    Button, Divider,
+    Box, Container,
     Drawer,
     IconButton, List, ListItem,
     ListItemButton,
     ListItemIcon, ListItemText,
     Toolbar,
-    Typography
+    Typography,
+    Link, Divider
 } from "@mui/material";
 import {useState} from "react";
-
+import MenuIcon from '@mui/icons-material/Menu';
+import {Link as RouterLink} from "react-router-dom";
+import {iconComponents, MovieList, TopList} from "../constants/constants.ts";
+interface IconProps {
+    iconName: string;
+}
+const Icon: React.FC<IconProps> = ({iconName}) => {
+    const IconComponent = iconComponents[iconName];
+    return IconComponent ? <IconComponent/> : null;
+};
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setIsOpen(newOpen);
     };
+    const DrawerList = (
+        <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+            <List>
+                {TopList.map((item, index) => (
+                    <Link component={RouterLink} to={item.url} key={index} sx={{textDecoration: 'none'}}>
+                        <ListItem disablePadding >
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <Icon iconName={item.icon}/>
+                                </ListItemIcon>
+                                <ListItemText primary={item.title} />
+                            </ListItemButton>
+                        </ListItem>
+                    </Link>
+                ))}
+            </List>
+            <Divider/>
+            <List>
+                {MovieList.map((item, index) => (
+                    <Link component={RouterLink} to={item.url} key={index} sx={{textDecoration: 'none'}}>
+                        <ListItem disablePadding >
+                            <ListItemButton>
+                                <ListItemIcon>
+                                    <Icon iconName={item.icon}/>
+                                </ListItemIcon>
+                                <ListItemText primary={item.title} />
+                            </ListItemButton>
+                        </ListItem>
+                    </Link>
+                ))}
+            </List>
+        </Box>
+    );
+
+
     return (
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
+        <AppBar>
+            <Container maxWidth="lg">
                 <Toolbar>
                     <IconButton
                         size="large"
@@ -29,43 +73,22 @@ const Navbar = () => {
                         sx={{ mr: 2 }}
                         onClick={toggleDrawer(true)}
                     >
-                        {/*<MenuIcon />*/}
+                        <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Top 100 films
+                    <Typography
+                        variant="h5"
+                        sx={{ color: 'white', textDecoration: 'none' }}
+                        component={RouterLink}
+                        to='/'
+                    >
+                        FilmFlix
                     </Typography>
                     <Drawer open={isOpen} onClose={toggleDrawer(false)}>
-                        <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-                            <List>
-                                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                                    <ListItem key={text} disablePadding>
-                                        <ListItemButton>
-                                            <ListItemIcon>
-                                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                            </ListItemIcon>
-                                            <ListItemText primary={text} />
-                                        </ListItemButton>
-                                    </ListItem>
-                                ))}
-                            </List>
-                            <Divider />
-                            <List>
-                                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                                    <ListItem key={text} disablePadding>
-                                        <ListItemButton>
-                                            <ListItemIcon>
-                                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                            </ListItemIcon>
-                                            <ListItemText primary={text} />
-                                        </ListItemButton>
-                                    </ListItem>
-                                ))}
-                            </List>
-                        </Box>
+                        {DrawerList}
                     </Drawer>
                 </Toolbar>
-            </AppBar>
-        </Box>
+            </Container>
+        </AppBar>
     );
 };
 
