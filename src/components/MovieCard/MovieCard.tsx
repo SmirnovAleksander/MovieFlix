@@ -1,6 +1,6 @@
 import {Link} from "react-router-dom";
 import {Box, Rating, Stack, Tooltip, Typography} from "@mui/material";
-import {Movie} from "../MoviesList/MoviesList.tsx";
+import {Movie} from "../../app/types.ts";
 
 interface MovieCardProps {
     movie: Movie
