@@ -91,18 +91,18 @@ export const MovieList = [
         title: 'Фильмы',
         icon: 'LocalMovies',
         url: '/films',
-        value: ''
+        value: 'FILM'
     },
     {
         title: 'Сериалы',
         icon: 'Reorder',
         url: '/serials',
-        value: ''
+        value: 'TV_SERIES'
     },
     {
         title: 'Мультфильмы',
         icon: 'Fort',
         url: '/cartoons',
-        value: ''
+        value: 'FILM'
     },
 ];

@@ -17,3 +17,13 @@ export interface Movie {
     description: string,
     ratingAgeLimits: string | null,
 }
+
+export interface Genre {
+    id: number;
+    genre: string;
+}
+
+export interface Country {
+    id: number;
+    country: string;
+}
