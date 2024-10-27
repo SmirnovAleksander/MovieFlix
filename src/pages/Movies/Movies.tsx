@@ -3,6 +3,8 @@ import BearCarousel, {BearSlideImage} from 'bear-react-carousel';
 import {Stack, Link} from "@mui/material";
 import {Link as ReactLink} from "react-router-dom";
 import {Movie} from "../../app/types.ts";
+import ErrorMessage from "../../components/ErrorMessage";
+import MoviesSkeleton from "./MoviesSkeleton.tsx";
 
 const Movies = () => {
     const {isLoading,
@@ -13,8 +15,8 @@ const Movies = () => {
         responseSerials,
         responseCartoons} = UseMoviesQuery();
 
-    if (isLoading) return <p>Loading...</p>//TODO Add Loading component
-    if (isError) return <p>Error</p>;//TODO Error component
+    if (isLoading) return <MoviesSkeleton/>
+    if (isError) return <ErrorMessage/>;
 
     const serializeDataForCarousel = (data: Movie[]) => (
         data.map((row) => (

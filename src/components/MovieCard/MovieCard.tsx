@@ -8,7 +8,7 @@ interface MovieCardProps {
 
 const MovieCard: React.FC<MovieCardProps> = ({movie}) => {
     return (
-        <Stack key={movie.kinopoiskId}>
+        <Stack key={movie.kinopoiskId} mx={0.5}>
             <Link to={`/movie/${movie.kinopoiskId}`}>
                 <img style={{width: 215}} src={movie.posterUrlPreview} alt={movie.nameRu || movie.nameEn || "Movie Poster"} />
             </Link>
