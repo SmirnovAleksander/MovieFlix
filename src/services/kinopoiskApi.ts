@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
-import {Country, Genre} from "../app/types.ts";
+import {Country, FilmInfo, Genre, StaffMember} from "../app/types.ts";
 
 const excludeGenres = [
     ""
@@ -7,6 +7,16 @@ const excludeGenres = [
 export interface FiltersResponse {
     genres: Genre[];
     countries: Country[];
+}
+export interface SequelAndPrequel {
+    filmId: number;
+    nameRu: string;
+    nameEn?: string;
+    nameOriginal?: string;
+    posterUrl: string;
+    posterUrlPreview: string;
+    relationType: string;
+    kinopoiskId: number;
 }
 
 export const kinopoiskApi = createApi({
@@ -37,8 +47,31 @@ export const kinopoiskApi = createApi({
                     (el) => !excludeGenres.includes(el.genre),
                 )
             })
-        })
+        }),
+        getFilmInfo: builder.query<FilmInfo, {id: string}>({
+            query: ({id}) =>
+                `/v2.2/films/${id}`
+        }),
+        getSequelsAndPrequels: builder.query({
+            query: ({id}) =>
+                `/v2.1/films/${id}/sequels_and_prequels`,
+            transformResponse: (response: Array<Omit<SequelAndPrequel, 'kinopoiskId'>>) => response.map((el) => ({
+                ...el,
+                kinopoiskId: el.filmId
+            }))
+        }),
+        getStuff: builder.query<StaffMember[], { id: string }>({
+            query: ({id}) =>
+                `/v1/staff?filmId=${id}`
+        }),
     }),
 });
 
-export const {useGetFilmsTopQuery, useGetFilmsQuery, useGetGenresAndCountriesQuery} = kinopoiskApi
+export const {
+    useGetFilmsTopQuery,
+    useGetFilmsQuery,
+    useGetGenresAndCountriesQuery,
+    useGetFilmInfoQuery,
+    useGetSequelsAndPrequelsQuery,
+    useGetStuffQuery,
+} = kinopoiskApi
