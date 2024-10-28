@@ -13,6 +13,7 @@ import {useState} from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import {Link as RouterLink} from "react-router-dom";
 import {iconComponents, MovieList, TopList} from "../../constants/constants.ts";
+import SearchElement from "../SearchElement";
 interface IconProps {
     iconName: string;
 }
@@ -86,6 +87,7 @@ const Navbar = () => {
                     <Drawer open={isOpen} onClose={toggleDrawer(false)}>
                         {DrawerList}
                     </Drawer>
+                    <SearchElement/>
                 </Toolbar>
             </Container>
         </AppBar>
