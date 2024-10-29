@@ -31,10 +31,23 @@ const Navbar = () => {
     const toggleDrawer = (newOpen: boolean) => () => {
         setIsOpen(newOpen);
     };
+    const dataAvailability: Record<string, boolean> = {
+        TOP_POPULAR_MOVIES: true,
+        TOP_250_MOVIES: true,
+        VAMPIRE_THEME: true,
+        COMICS_THEME: true,
+        FAMILY: false,
+        LOVE_THEME: false,
+        ZOMBIE_THEME: false,
+        CATASTROPHE_THEME: false,
+        POPULAR_SERIES: false,
+    };
+
+    const filteredTopList = TopList.filter((item) => dataAvailability[item.value]);
     const DrawerList = (
         <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
             <List>
-                {TopList.map((item, index) => (
+                {filteredTopList.map((item, index) => (
                     <Link component={RouterLink} to={item.url} key={index} sx={{textDecoration: 'none'}}>
                         <ListItem disablePadding >
                             <ListItemButton>

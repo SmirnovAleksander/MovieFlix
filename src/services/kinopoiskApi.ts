@@ -6,6 +6,7 @@ import {FilmInfo} from "../app/ApiTypes/FilmInfoApi.types.ts";
 import {SequelAndPrequel, SequelsAndPrequels} from "../app/ApiTypes/SequelsAndPrequelsApi.types.ts";
 import {StaffMembers} from "../app/ApiTypes/StaffMembersApi.types.ts";
 import {PersonInfo} from "../app/ApiTypes/StaffMemberInfoApi.types.ts";
+import {FilmImagesCollection, FilmImagesQueryParams} from "../app/ApiTypes/FilmImagesApi.types.ts";
 
 const excludeGenres = [
     ""
@@ -16,7 +17,8 @@ export const kinopoiskApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: 'https://kinopoiskapiunofficial.tech/api',
         prepareHeaders: headers => {
-            headers.set('X-API-KEY', '879c5663-4b59-4718-b205-6285fa1d4d40')
+            headers.set('X-API-KEY', '73d4ab20-9100-4d3d-b0d5-72acaf3a4d5d')
+            // '73d4ab20-9100-4d3d-b0d5-72acaf3a4d5d'
             // '879c5663-4b59-4718-b205-6285fa1d4d40'
             headers.set('Content-Type', 'application/json')
         }
@@ -26,6 +28,15 @@ export const kinopoiskApi = createApi({
         getFilmsTop: builder.query<FilmsCollections, FilmsCollectionsQueryParams>({
             query: ({type, page}) =>
                 `/v2.2/films/collections?type=${type}&page=${page}`,
+            transformResponse: (response: FilmsCollections) => {
+                if (response.total === 0 || response.totalPages === 0 || response.items.length === 0) {
+                    return {
+                        ...response,
+                        items: []
+                    };
+                }
+                return response;
+            },
         }),
         getFilms: builder.query<FilmsItems, FilmsItemsQueryParams>({
             query: ({countries, genreId, order = 'NUM_VOTE', type = 'FILM', year, page, keyword = ''}) =>
@@ -60,6 +71,10 @@ export const kinopoiskApi = createApi({
             query: ({id}) =>
                 `/v1/staff/${id}`
         }),
+        getFilmImages:  builder.query<FilmImagesCollection, FilmImagesQueryParams>({
+            query: ({id, type, page}) =>
+                `/v2.2/films/${id}/images?type=${type}&page=${page}`
+        }),
     }),
 });
 
@@ -70,5 +85,6 @@ export const {
     useGetFilmInfoQuery,
     useGetSequelsAndPrequelsQuery,
     useGetStuffQuery,
-    useGetStuffInfoQuery
+    useGetStuffInfoQuery,
+    useGetFilmImagesQuery
 } = kinopoiskApi

@@ -1,8 +1,8 @@
 export interface SequelAndPrequel {
-    filmId: number | null;
-    nameRu: string | null;
-    nameEn: string | null;
-    nameOriginal: string | null;
+    filmId: number;
+    nameRu: string;
+    nameEn: string;
+    nameOriginal: string;
     posterUrl: string;
     posterUrlPreview: string;
     relationType: 'PREQUEL' | 'SEQUEL' | string;

@@ -1,4 +1,9 @@
-import {useGetFilmInfoQuery, useGetSequelsAndPrequelsQuery, useGetStuffQuery} from "../../services/kinopoiskApi.ts";
+import {
+    useGetFilmImagesQuery,
+    useGetFilmInfoQuery,
+    useGetSequelsAndPrequelsQuery,
+    useGetStuffQuery
+} from "../../services/kinopoiskApi.ts";
 import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import ErrorMessage from "../../components/ErrorMessage";
 import LoadingElement from "../../components/LoadingElement";
@@ -7,6 +12,8 @@ import Grid from '@mui/material/Grid2';
 import {ArrowBack, Language, Movie as MovieIcon} from "@mui/icons-material";
 import MovieCard from "../../components/MovieCard";
 import VideoPlayer from "../../components/VideoPlayer";
+import ImageCarousel from "../../components/ImageCarousel";
+import PosterCarousel from "../../components/PosterCarousel";
 
 const MovieDetail = () => {
     const navigate = useNavigate();
@@ -15,11 +22,32 @@ const MovieDetail = () => {
     const responseSequelsAndPrequels = useGetSequelsAndPrequelsQuery({id: id!});
     const responseFilmStuff = useGetStuffQuery({id: id!});
 
+    const stillImages = useGetFilmImagesQuery({ id: id!, page: 1, type: 'STILL' });
+    const shootingImages = useGetFilmImagesQuery({ id: id!, page: 1, type: 'SHOOTING' });
+    const posterImages = useGetFilmImagesQuery({ id: id!, page: 1, type: 'POSTER' });
+
     const directorStuff = responseFilmStuff.data?.filter(el => el.professionKey === 'DIRECTOR')
     const actorsStuff = responseFilmStuff.data?.filter(el => el.professionKey === 'ACTOR')
 
-    if (responseFilmInfo.error && responseSequelsAndPrequels.error && responseFilmStuff.error) return <ErrorMessage/>;
-    if (responseFilmInfo.isLoading || responseSequelsAndPrequels.isLoading || responseFilmStuff.isLoading) return <LoadingElement/>;
+    if (responseFilmInfo.error &&
+        responseSequelsAndPrequels.error &&
+        responseFilmStuff.error &&
+        stillImages.error &&
+        shootingImages.error &&
+        posterImages.error
+    ) return <ErrorMessage/>;
+    if (responseFilmInfo.isLoading ||
+        responseSequelsAndPrequels.isLoading ||
+        responseFilmStuff.isLoading ||
+        stillImages.isLoading ||
+        shootingImages.isLoading ||
+        posterImages.isLoading
+    ) return <LoadingElement/>;
+    const imageTypes: Record<string, string> = {
+        'STILL': "Кадры из фильма",
+        'SHOOTING': "Изображения со съемок",
+        'POSTER': "Постеры",
+    }
     return (
         <Stack py={2}>
             <Grid container spacing={2}>
@@ -29,6 +57,9 @@ const MovieDetail = () => {
                         alt={responseFilmInfo.data?.nameRu}
                         width="100%"
                     />
+                    {/*{posterImages.data && (*/}
+                    {/*    <PosterCarousel images={posterImages.data.items}/>*/}
+                    {/*)}*/}
                     <Grid container spacing={2}>
                         <Grid size={12} >
                             <ButtonGroup variant="outlined" size='small'>
@@ -144,6 +175,15 @@ const MovieDetail = () => {
                         ))}
                     </Stack>
                 </Stack>
+            )}
+            {stillImages.data && (
+                <ImageCarousel title={imageTypes['STILL']} images={stillImages.data.items} />
+            )}
+            {shootingImages.data && (
+                <ImageCarousel title={imageTypes["SHOOTING"]} images={shootingImages.data.items} />
+            )}
+            {posterImages.data && (
+                <ImageCarousel title={imageTypes["POSTER"]} images={posterImages.data.items} />
             )}
         </Stack>
     );
