@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
-import {Country, FilmInfo, Genre, StaffMember} from "../app/types.ts";
+import {Country, FilmInfo, Genre, StaffMember, StaffMemberInfo} from "../app/types.ts";
 
 const excludeGenres = [
     ""
@@ -64,6 +64,10 @@ export const kinopoiskApi = createApi({
             query: ({id}) =>
                 `/v1/staff?filmId=${id}`
         }),
+        getStuffInfo: builder.query<StaffMemberInfo, { id: string }>({
+            query: ({id}) =>
+                `/v1/staff/${id}`
+        }),
     }),
 });
 
@@ -74,4 +78,5 @@ export const {
     useGetFilmInfoQuery,
     useGetSequelsAndPrequelsQuery,
     useGetStuffQuery,
+    useGetStuffInfoQuery
 } = kinopoiskApi

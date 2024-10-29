@@ -1,8 +1,8 @@
 import {useGetFilmInfoQuery, useGetSequelsAndPrequelsQuery, useGetStuffQuery} from "../../services/kinopoiskApi.ts";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import ErrorMessage from "../../components/ErrorMessage";
 import LoadingElement from "../../components/LoadingElement";
-import {Button, ButtonGroup, Stack, Typography} from "@mui/material";
+import {Button, ButtonGroup, Link, Stack, Typography} from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import {ArrowBack, Language, Movie as MovieIcon} from "@mui/icons-material";
 import MovieCard from "../../components/MovieCard";
@@ -122,9 +122,11 @@ const MovieDetail = () => {
                     <Grid size={12} textAlign='center'>Актерский состав</Grid>
                     <Grid size={12}>
                         {actorsStuff?.slice(0, 20).map(({ nameRu, staffId}) => (
-                            <Typography key={staffId} variant="body2">
-                                {nameRu}
-                            </Typography>
+                            <Link component={RouterLink} to={`/actor/${staffId}`} key={nameRu}>
+                                <Typography variant="body1" >
+                                    {nameRu}
+                                </Typography>
+                            </Link>
                         ))}
                     </Grid>
                 </Grid>
