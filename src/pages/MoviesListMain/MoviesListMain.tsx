@@ -20,7 +20,7 @@ const MoviesListMain = () => {
     if (!movieType) {
         throw new Error("No movies found.");
     }
-    const myGenreId = movieType.url === '/cartoons' ? 18 : genreId;
+    const myGenreId = movieType.url === '/cartoons' ? '18' : genreId;
 
     const responseFilms = useGetFilmsQuery({
         type: movieType.value,
@@ -53,7 +53,7 @@ const MoviesListMain = () => {
                 <Button onClick={() => navigate(-1)}>Назад</Button>
                 <Typography variant="h6" component="div">{movieType.title}</Typography>
             </Stack>
-            <MoviesList movies={responseFilms.data.items} totalPages={responseFilms.data.totalPages} page={page} setPage={setPage} />
+            <MoviesList movies={responseFilms.data?.items || []} totalPages={responseFilms.data?.totalPages || 0} page={page} setPage={setPage} />
         </>
     );
 };

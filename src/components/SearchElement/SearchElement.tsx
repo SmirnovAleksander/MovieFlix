@@ -2,10 +2,10 @@ import {Autocomplete, TextField} from "@mui/material";
 import {useGetFilmsQuery} from "../../services/kinopoiskApi.ts";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "../../app/store.ts";
-import {FilmInfo} from "../../app/types.ts";
 import LoadingElement from "../LoadingElement";
 import {useEffect, useState} from "react";
 import {setSearchQuery} from "../../features/searchQuerySlice.ts";
+import {FilmItem} from "../../app/ApiTypes/FilmItemApi.types.ts";
 // import {useNavigate} from "react-router-dom";
 
 const SearchElement = () => {
@@ -37,7 +37,7 @@ const SearchElement = () => {
             size='small'
             freeSolo
             sx={{width: 300}}
-            options={data ? data.items.map((option: FilmInfo) => `${option.nameRu} - ${option.year}`) : []}
+            options={data ? data.items.map((option: FilmItem) => `${option.nameRu} - ${option.year}`) : []}
             onInputChange={(_, value) => {
                 setInput(value)
             }}

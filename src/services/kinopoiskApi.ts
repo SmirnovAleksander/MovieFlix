@@ -1,23 +1,15 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
-import {Country, FilmInfo, Genre, StaffMember, StaffMemberInfo} from "../app/types.ts";
+import {FilmsCollections, FilmsCollectionsQueryParams} from "../app/ApiTypes/FilmCollectionApi.types.ts";
+import {FilmsItems, FilmsItemsQueryParams} from "../app/ApiTypes/FilmItemApi.types.ts";
+import {GenresAndCountries} from "../app/ApiTypes/GenresAndCountriesApi.types.ts";
+import {FilmInfo} from "../app/ApiTypes/FilmInfoApi.types.ts";
+import {SequelAndPrequel, SequelsAndPrequels} from "../app/ApiTypes/SequelsAndPrequelsApi.types.ts";
+import {StaffMembers} from "../app/ApiTypes/StaffMembersApi.types.ts";
+import {PersonInfo} from "../app/ApiTypes/StaffMemberInfoApi.types.ts";
 
 const excludeGenres = [
     ""
 ]
-export interface FiltersResponse {
-    genres: Genre[];
-    countries: Country[];
-}
-export interface SequelAndPrequel {
-    filmId: number;
-    nameRu: string;
-    nameEn?: string;
-    nameOriginal?: string;
-    posterUrl: string;
-    posterUrlPreview: string;
-    relationType: string;
-    kinopoiskId: number;
-}
 
 export const kinopoiskApi = createApi({
     reducerPath: 'kinopoiskApi',
@@ -31,17 +23,17 @@ export const kinopoiskApi = createApi({
     }),
 
     endpoints: (builder) => ({
-        getFilmsTop: builder.query({
+        getFilmsTop: builder.query<FilmsCollections, FilmsCollectionsQueryParams>({
             query: ({type, page}) =>
                 `/v2.2/films/collections?type=${type}&page=${page}`,
         }),
-        getFilms: builder.query({
+        getFilms: builder.query<FilmsItems, FilmsItemsQueryParams>({
             query: ({countries, genreId, order = 'NUM_VOTE', type = 'FILM', year, page, keyword = ''}) =>
                 `/v2.2/films?countries=${countries}&genres=${genreId}&order=${order}&type=${type}&yearTo=${year}&yearFrom=${year}&page=${page}&keyword=${keyword}`
         }),
-        getGenresAndCountries: builder.query<FiltersResponse, void>({
+        getGenresAndCountries: builder.query<GenresAndCountries, void>({
             query: () => `/v2.2/films/filters`,
-            transformResponse: (response: FiltersResponse) => ({
+            transformResponse: (response: GenresAndCountries) => ({
                 ...response,
                 genres: response.genres.filter(
                     (el) => !excludeGenres.includes(el.genre),
@@ -52,7 +44,7 @@ export const kinopoiskApi = createApi({
             query: ({id}) =>
                 `/v2.2/films/${id}`
         }),
-        getSequelsAndPrequels: builder.query({
+        getSequelsAndPrequels: builder.query<SequelsAndPrequels, {id: string}>({
             query: ({id}) =>
                 `/v2.1/films/${id}/sequels_and_prequels`,
             transformResponse: (response: Array<Omit<SequelAndPrequel, 'kinopoiskId'>>) => response.map((el) => ({
@@ -60,11 +52,11 @@ export const kinopoiskApi = createApi({
                 kinopoiskId: el.filmId
             }))
         }),
-        getStuff: builder.query<StaffMember[], { id: string }>({
+        getStuff: builder.query<StaffMembers, { id: string }>({
             query: ({id}) =>
                 `/v1/staff?filmId=${id}`
         }),
-        getStuffInfo: builder.query<StaffMemberInfo, { id: string }>({
+        getStuffInfo: builder.query<PersonInfo, { id: string }>({
             query: ({id}) =>
                 `/v1/staff/${id}`
         }),

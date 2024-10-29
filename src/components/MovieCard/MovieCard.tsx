@@ -1,25 +1,28 @@
 import {Link} from "react-router-dom";
 import {Box, Rating, Stack, Tooltip, Typography} from "@mui/material";
-import {Movie} from "../../app/types.ts";
+import {FilmItemCollection} from "../../app/ApiTypes/FilmCollectionApi.types.ts";
+import {FilmItem} from "../../app/ApiTypes/FilmItemApi.types.ts";
+import {SequelAndPrequel} from "../../app/ApiTypes/SequelsAndPrequelsApi.types.ts";
 
 interface MovieCardProps {
-    movie: Movie
+    movie: FilmItemCollection | FilmItem | SequelAndPrequel;
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({movie}) => {
+    const hasRating = 'ratingKinopoisk' in movie && movie.ratingKinopoisk !== null;
     return (
         <Stack key={movie.kinopoiskId} mx={0.5}>
             <Link to={`/movie/${movie.kinopoiskId}`}>
                 <img style={{width: 215}} src={movie.posterUrlPreview} alt={movie.nameRu || movie.nameEn || "Movie Poster"} />
             </Link>
             <Typography textAlign='center'>{movie.nameRu ? movie.nameRu : movie.nameEn}</Typography>
-            {movie.ratingKinopoisk && (
+            {hasRating && (
                 <Stack alignItems={'center'}>
                     <Tooltip title={`${movie.ratingKinopoisk} / 10`} >
                         <Box>
                             <Rating
                                 name='read-only'
-                                value={movie.ratingKinopoisk / 2}
+                                value={movie.ratingKinopoisk! / 2}
                                 precision={0.1}
                                 readOnly
                             />

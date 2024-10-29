@@ -30,7 +30,7 @@ const MoviesListTop = () => {
                 <Button onClick={() => navigate(-1)}>Назад</Button>
                 <Typography variant="h6" component="div">{movieType.title}</Typography>
             </Stack>
-            <MoviesList movies={data.items} totalPages={data.totalPages} page={page} setPage={setPage} />
+            <MoviesList movies={data?.items || []} totalPages={data?.totalPages || 0} page={page} setPage={setPage} />
         </>
     );
 };

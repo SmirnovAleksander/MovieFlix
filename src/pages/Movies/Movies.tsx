@@ -2,9 +2,9 @@ import UseMoviesQuery from "../../hooks/useMoviesQuery.tsx";
 import BearCarousel, {BearSlideImage} from 'bear-react-carousel';
 import {Stack, Link} from "@mui/material";
 import {Link as ReactLink} from "react-router-dom";
-import {Movie} from "../../app/types.ts";
 import ErrorMessage from "../../components/ErrorMessage";
 import MoviesSkeleton from "./MoviesSkeleton.tsx";
+import {FilmItem} from "../../app/ApiTypes/FilmItemApi.types.ts";
 
 const Movies = () => {
     const {isLoading,
@@ -18,39 +18,38 @@ const Movies = () => {
     if (isLoading) return <MoviesSkeleton/>
     if (isError) return <ErrorMessage/>;
 
-    const serializeDataForCarousel = (data: Movie[]) => (
-        data.map((row) => (
+    const serializeDataForCarousel = (data: FilmItem[] | undefined) => (
+        data ? data.map((row) => (
                 <ReactLink key={row.kinopoiskId} to={`/movie/${row.kinopoiskId}`}>
                     <BearSlideImage imageUrl={row.posterUrlPreview} />
                 </ReactLink>
-            )
-        )
-    )
+            )): []
+    );
     const carouselArray = [
         {
             title: 'Популярные фильмы',
             url: '/popular',
-            data: serializeDataForCarousel(responsePopular.data.items)
+            data: serializeDataForCarousel(responsePopular?.data?.items)
         },
         {
             title: 'Лучшие фильмы',
             url: '/best',
-            data: serializeDataForCarousel(responseBest.data.items)
+            data: serializeDataForCarousel(responseBest?.data?.items)
         },
         {
             title: 'Фильмы',
             url: '/films',
-            data: serializeDataForCarousel(responseFilms.data.items)
+            data: serializeDataForCarousel(responseFilms?.data?.items)
         },
         {
             title: 'Сериалы',
             url: '/serials',
-            data: serializeDataForCarousel(responseSerials.data.items)
+            data: serializeDataForCarousel(responseSerials?.data?.items)
         },
         {
             title: 'Мультфильмы',
             url: '/cartoons',
-            data: serializeDataForCarousel(responseCartoons.data.items)
+            data: serializeDataForCarousel(responseCartoons?.data?.items)
         }
     ]
     return (

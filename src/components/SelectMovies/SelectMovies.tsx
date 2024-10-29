@@ -4,15 +4,15 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import {Button, Stack} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import {Country, Genre} from "../../app/types.ts";
 import {AppDispatch} from "../../app/store.ts";
 import {useDispatch} from "react-redux";
 import {selectQuery} from "../../features/currentQuerySlice.ts";
 import {useState} from "react";
+import {CountryUnique, GenreUnique} from "../../app/ApiTypes/GenresAndCountriesApi.types.ts";
 
 interface SelectMoviesProps {
-    countiesList: Country[],
-    genresList: Genre[],
+    countiesList: CountryUnique[],
+    genresList: GenreUnique[],
     countries: string,
     genreId: string,
     order: string,

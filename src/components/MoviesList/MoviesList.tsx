@@ -1,9 +1,10 @@
 import {Pagination, Stack} from "@mui/material";
 import MovieCard from "../MovieCard";
-import {Movie} from "../../app/types.ts";
+import {FilmItem} from "../../app/ApiTypes/FilmItemApi.types.ts";
+import {FilmItemCollection} from "../../app/ApiTypes/FilmCollectionApi.types.ts";
 
 interface MoviesListProps {
-    movies: Movie[],
+    movies: FilmItemCollection[] | FilmItem[],
     totalPages: number,
     page: number,
     setPage: (page: number) => void
