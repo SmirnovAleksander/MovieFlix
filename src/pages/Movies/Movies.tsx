@@ -72,8 +72,8 @@ const Movies = () => {
                             isEnableNavButton
                             // isEnablePagination
                             isEnableLoop={true}
-                            // autoPlayTime={5000}
-                            // isEnableAutoPlay={true}
+                            autoPlayTime={5000}
+                            isEnableAutoPlay={true}
                             breakpoints={{
                                 768: {
                                     slidesPerView: 5,
@@ -86,10 +86,7 @@ const Movies = () => {
                         />
                     </Stack>
                 ))}
-
             </Stack>
-
-
         </>
     );
 };

@@ -1,20 +1,22 @@
-import {useNavigate, useParams, Link as RouterLink} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useGetStuffInfoQuery} from "../../services/kinopoiskApi.ts";
 import ErrorMessage from "../../components/ErrorMessage";
 import LoadingElement from "../../components/LoadingElement";
 import Grid from "@mui/material/Grid2";
-import {Button, Stack, Typography, Link} from "@mui/material";
+import {Button, Stack, Typography, Link, IconButton} from "@mui/material";
 import {ArrowBack, Language} from "@mui/icons-material";
+import MiniMovieCard from "../../components/MiniMovieCard";
 
 const ActorDetail = () => {
     const {id} = useParams();
     const navigate = useNavigate();
     const {data, error, isLoading} = useGetStuffInfoQuery({id: id!});
-
     if (error) return <ErrorMessage/>;
     if (isLoading) return <LoadingElement/>;
-    const filteredDublicateFilms = data?.films?.filter((item, index, self) => index === self.findIndex(el => el.filmId === item.filmId))
 
+    const filteredDublicateFilms = data?.films?.filter((item, index, self) => index === self.findIndex(el => el.filmId === item.filmId))
+    const uniqueFilmIds = Array.from(new Set(filteredDublicateFilms?.map((film) => film.filmId)));
+    console.log('Ides: ', uniqueFilmIds)
     return (
         <Stack py={2}>
             <Grid container spacing={2}>
@@ -23,24 +25,26 @@ const ActorDetail = () => {
                         src={data?.posterUrl}
                         alt={data?.nameRu}
                         width="100%"
-                    />
+                        />
                     <Grid container spacing={2}>
                         <Grid size={12} >
-                            <Button target='_blank' endIcon={<Language/>} href={data?.webUrl || ""}>Кинопоиск</Button>
+                            <Button variant='outlined' target='_blank' endIcon={<Language/>} href={data?.webUrl || ""}>Кинопоиск</Button>
                         </Grid>
                     </Grid>
                 </Grid>
                 <Grid size={6} sx={{sm: 12}}>
                     <Grid container>
-                        <Grid size={2}>
-                            <Button startIcon={<ArrowBack/>} onClick={() => navigate(-1)}/>
+                        <Grid size={1}>
+                            <IconButton onClick={() => navigate(-1)}>
+                                <ArrowBack/>
+                            </IconButton>
                         </Grid>
                         <Grid alignItems="center" justifyContent="center">
                             <Typography variant="h6">{data?.nameRu}</Typography>
                             <Typography variant="body2">{data?.nameEn}</Typography>
                         </Grid>
                     </Grid>
-                    <Grid container>
+                    <Grid container paddingTop={1}>
                         <Typography variant='h6'>Об актере:</Typography>
                     </Grid>
                     <Grid container spacing={1}>
@@ -115,9 +119,11 @@ const ActorDetail = () => {
                             <>
                                 <Grid size={12}>Описание:</Grid>
                                 <Grid size={12}>
-                                    <Typography key={data.facts[0]} variant="body2">
-                                        {data.facts[0]}
-                                    </Typography>
+                                    {data.facts.map((line) => (
+                                        <Typography key={line} variant="body2">
+                                            {line}
+                                        </Typography>
+                                    ))}
                                 </Grid>
 
                                 <Grid size={6}>Полое имя:</Grid>
@@ -130,7 +136,7 @@ const ActorDetail = () => {
                         )}
                         {data?.spouses && data.spouses.length > 0 && (
                             <>
-                                <Grid size={6}>Супруги:</Grid>
+                                <Grid size={6}>Супруг / супруга:</Grid>
                                 <Grid size={6}>
                                     {data.spouses.map((spouse) => (
                                         <Typography variant="body2" key={spouse.personId}>
@@ -145,21 +151,14 @@ const ActorDetail = () => {
                     </Grid>
                 </Grid>
             </Grid>
-            <Stack>
-                {filteredDublicateFilms?.map((film, index) => (
-                    <Grid container size={12} key={index}>
-                        <Grid size={5}>
-                            <Link component={RouterLink} to={`/movie/${film.filmId}`}>
-                                {film.nameRu ? film.nameRu : film.nameEn}
-                            </Link>
-                        </Grid>
-                        <Grid size={6}>
-                            <Typography variant="body2" >
-                                {film.rating ? film.rating : '----'}
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                ))}
+            <Stack direction="column" spacing={2} py={2}>
+                <Typography variant={'h5'}>Фильмы: </Typography>
+                <Stack flexDirection={"row"} flexWrap={"wrap"}>
+                    {uniqueFilmIds.map((filmId) => (
+                        <MiniMovieCard filmId={filmId} key={filmId}/>
+                    ))}
+                </Stack>
+
             </Stack>
         </Stack>
     );

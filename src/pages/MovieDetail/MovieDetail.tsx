@@ -7,13 +7,12 @@ import {
 import {Link as RouterLink, useNavigate, useParams} from "react-router-dom";
 import ErrorMessage from "../../components/ErrorMessage";
 import LoadingElement from "../../components/LoadingElement";
-import {Button, ButtonGroup, Link, Stack, Typography} from "@mui/material";
+import {Button, ButtonGroup, IconButton, Link, Stack, Typography} from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import {ArrowBack, Language, Movie as MovieIcon} from "@mui/icons-material";
 import MovieCard from "../../components/MovieCard";
 import VideoPlayer from "../../components/VideoPlayer";
 import ImageCarousel from "../../components/ImageCarousel";
-import PosterCarousel from "../../components/PosterCarousel";
 
 const MovieDetail = () => {
     const navigate = useNavigate();
@@ -70,17 +69,19 @@ const MovieDetail = () => {
                     </Grid>
                 </Grid>
                 <Grid size={6} sx={{sm: 12}}>
-                    <Grid container>
-                        <Grid size={2}>
-                            <Button startIcon={<ArrowBack/>} onClick={() => navigate(-1)}/>
+                    <Grid container alignItems="center">
+                        <Grid size={1}>
+                            <IconButton onClick={() => navigate(-1)}>
+                                <ArrowBack/>
+                            </IconButton>
                         </Grid>
-                        <Grid size={4} alignItems="center" justifyContent="center">
+                        <Grid>
                             <Typography variant="h6">
                                 {responseFilmInfo.data?.nameRu ? responseFilmInfo.data?.nameRu : responseFilmInfo.data?.nameEn}
                             </Typography>
                         </Grid>
                     </Grid>
-                    <Grid container spacing={1}>
+                    <Grid container spacing={1} paddingTop={1}>
                         <Grid size={6}>Год</Grid>
                         <Grid size={6}>
                             <Typography variant="body2" >
@@ -108,7 +109,7 @@ const MovieDetail = () => {
 
                         <Grid size={6}>Режиссеры</Grid>
                         <Grid size={6}>
-                            {directorStuff?.map(({ nameRu, staffId }) => (
+                            {directorStuff?.slice(0, 5).map(({ nameRu, staffId }) => (
                                 <Typography key={staffId} variant="body2">
                                     {nameRu}
                                 </Typography>
