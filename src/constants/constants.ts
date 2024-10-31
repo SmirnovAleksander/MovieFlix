@@ -14,19 +14,24 @@ import {
     SvgIconComponent
 } from '@mui/icons-material'
 
+import VideocamOutlinedIcon from '@mui/icons-material/VideocamOutlined';
+import HistoryToggleOffOutlinedIcon from '@mui/icons-material/HistoryToggleOffOutlined';
+
 export const iconComponents: Record<string, SvgIconComponent> = {
-    AutoAwesome,
-    StarPurple500,
-    Bloodtype,
-    MenuBook,
-    FamilyRestroom,
-    VolunteerActivism,
-    MoodBad,
-    Pool,
-    LiveTv,
-    LocalMovies,
-    Reorder,
-    Fort
+    'AutoAwesome': AutoAwesome,
+    'StarPurple500': StarPurple500,
+    'Bloodtype': Bloodtype,
+    'MenuBook': MenuBook,
+    'FamilyRestroom': FamilyRestroom,
+    'VolunteerActivism': VolunteerActivism,
+    'MoodBad': MoodBad,
+    'Pool': Pool,
+    'LiveTv': LiveTv,
+    'LocalMovies': LocalMovies,
+    'Reorder': Reorder,
+    'Fort': Fort,
+    'VideocamOutlinedIcon': VideocamOutlinedIcon,
+    'HistoryToggleOffOutlinedIcon': HistoryToggleOffOutlinedIcon
 }
 
 export const TopList = [
@@ -89,14 +94,14 @@ export const TopList = [
 export const MovieList = [
     {
         title: 'Фильмы',
-        icon: 'LocalMovies',
+        icon: 'VideocamOutlinedIcon',
         url: '/films',
         value: 'FILM'
     },
     {
         title: 'Сериалы',
         icon: 'Reorder',
-        url: '/serials',
+        url: '/tv-serials',
         value: 'TV_SERIES'
     },
     {
@@ -104,5 +109,17 @@ export const MovieList = [
         icon: 'Fort',
         url: '/cartoons',
         value: 'FILM'
+    },
+    {
+        title: 'Тв шоу',
+        icon: 'LiveTv',
+        url: '/tv-shows',
+        value: 'TV_SHOW'
+    },
+    {
+        title: 'Мини Сериалы',
+        icon: 'HistoryToggleOffOutlinedIcon',
+        url: '/mini-series',
+        value: 'MINI_SERIES'
     },
 ];

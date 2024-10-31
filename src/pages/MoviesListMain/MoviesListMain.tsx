@@ -2,13 +2,14 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import ErrorMessage from "../../components/ErrorMessage";
 import MoviesListSkeleton from "../../components/MoviesListSkeleton";
-import {Button, Stack, Typography} from "@mui/material";
+import {IconButton, Stack, Typography} from "@mui/material";
 import MoviesList from "../../components/MoviesList";
 import {MovieList} from "../../constants/constants.ts";
 import {useGetFilmsQuery, useGetGenresAndCountriesQuery} from "../../services/kinopoiskApi.ts";
 import {useSelector} from "react-redux";
 import {RootState} from "../../app/store.ts";
 import SelectMovies from "../../components/SelectMovies";
+import {ArrowBack} from "@mui/icons-material";
 
 const MoviesListMain = () => {
     const location = useLocation();
@@ -41,17 +42,21 @@ const MoviesListMain = () => {
 
     return (
         <>
-            <SelectMovies
-                countiesList={responseGenresAndCountries.data?.countries || []}
-                genresList={responseGenresAndCountries.data?.genres || []}
-                countries={countries}
-                order={order}
-                year={year}
-                genreId={genreId}
-            />
-            <Stack flexDirection="row" py={1}>
-                <Button onClick={() => navigate(-1)}>Назад</Button>
-                <Typography variant="h6" component="div">{movieType.title}</Typography>
+            <Stack alignItems='center' justifyContent='center' py={2}>
+                <SelectMovies
+                    countiesList={responseGenresAndCountries.data?.countries || []}
+                    genresList={responseGenresAndCountries.data?.genres || []}
+                    countries={countries}
+                    order={order}
+                    year={year}
+                    genreId={genreId}
+                />
+            </Stack>
+            <Stack flexDirection="row" alignItems='center' py={1} >
+                <IconButton onClick={() => navigate(-1)}>
+                    <ArrowBack/>
+                </IconButton>
+                <Typography variant="h6" px={1}>{movieType.title}</Typography>
             </Stack>
             <MoviesList movies={responseFilms.data?.items || []} totalPages={responseFilms.data?.totalPages || 0} page={page} setPage={setPage} />
         </>

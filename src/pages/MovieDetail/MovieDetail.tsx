@@ -1,6 +1,6 @@
 import {
     useGetFilmImagesQuery,
-    useGetFilmInfoQuery,
+    useGetFilmInfoQuery, useGetFilmTrailerQuery,
     useGetSequelsAndPrequelsQuery,
     useGetStuffQuery
 } from "../../services/kinopoiskApi.ts";
@@ -10,16 +10,24 @@ import LoadingElement from "../../components/LoadingElement";
 import {Button, ButtonGroup, IconButton, Link, Stack, Typography} from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import {ArrowBack, Language, Movie as MovieIcon} from "@mui/icons-material";
+import MovieCreationOutlinedIcon from '@mui/icons-material/MovieCreationOutlined';
 import MovieCard from "../../components/MovieCard";
 import VideoPlayer from "../../components/VideoPlayer";
 import ImageCarousel from "../../components/ImageCarousel";
+import TrailerPlayer from "../../components/TrailerPlayer";
+import {useRef} from "react";
 
 const MovieDetail = () => {
     const navigate = useNavigate();
     const {id} = useParams();
+    const trailerRef = useRef<HTMLDivElement>(null)
+    const scrollToTrailer = () => {
+        trailerRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
     const responseFilmInfo = useGetFilmInfoQuery({id: id!});
     const responseSequelsAndPrequels = useGetSequelsAndPrequelsQuery({id: id!});
     const responseFilmStuff = useGetStuffQuery({id: id!});
+    const responseFilmTrailers = useGetFilmTrailerQuery({id: id!})
 
     const stillImages = useGetFilmImagesQuery({ id: id!, page: 1, type: 'STILL' });
     const shootingImages = useGetFilmImagesQuery({ id: id!, page: 1, type: 'SHOOTING' });
@@ -33,20 +41,25 @@ const MovieDetail = () => {
         responseFilmStuff.error &&
         stillImages.error &&
         shootingImages.error &&
-        posterImages.error
+        posterImages.error &&
+        responseFilmTrailers.error
     ) return <ErrorMessage/>;
     if (responseFilmInfo.isLoading ||
         responseSequelsAndPrequels.isLoading ||
         responseFilmStuff.isLoading ||
         stillImages.isLoading ||
         shootingImages.isLoading ||
-        posterImages.isLoading
+        posterImages.isLoading ||
+        responseFilmTrailers.isLoading
     ) return <LoadingElement/>;
     const imageTypes: Record<string, string> = {
         'STILL': "Кадры из фильма",
         'SHOOTING': "Изображения со съемок",
         'POSTER': "Постеры",
     }
+    const YouTubeUrl = responseFilmTrailers.data?.items
+        .filter((trailer) => trailer.site === 'YOUTUBE')[0]?.url || '';
+    // const YouTubeUrl = responseFilmTrailers.data?.items[0].url || '';
     return (
         <Stack py={2}>
             <Grid container spacing={2}>
@@ -56,6 +69,15 @@ const MovieDetail = () => {
                         alt={responseFilmInfo.data?.nameRu}
                         width="100%"
                     />
+                    {/*<Box sx={{position: 'relative'}}>*/}
+                    {/*    <img*/}
+                    {/*        src={responseFilmInfo.data?.posterUrl}*/}
+                    {/*        alt={responseFilmInfo.data?.nameRu}*/}
+                    {/*        width="100%"*/}
+                    {/*    />*/}
+                    {/*    <Button onClick={scrollToTrailer}*/}
+                    {/*            sx={{position: 'absolute', bottom: '10px', right: '5px'}}>Трейлер</Button>*/}
+                    {/*</Box>*/}
                     {/*{posterImages.data && (*/}
                     {/*    <PosterCarousel images={posterImages.data.items}/>*/}
                     {/*)}*/}
@@ -64,6 +86,7 @@ const MovieDetail = () => {
                             <ButtonGroup variant="outlined" size='small'>
                                 <Button target='_blank' endIcon={<Language/>} href={responseFilmInfo.data?.webUrl || ""}>Кинопоиск</Button>
                                 <Button target='_blank' endIcon={<MovieIcon/>} href={`https://www.imdb.com/title/${responseFilmInfo.data?.imdbId} || ""`}>IMDB</Button>
+                                <Button onClick={scrollToTrailer} endIcon={<MovieCreationOutlinedIcon/>}>Трейлер</Button>
                             </ButtonGroup>
                         </Grid>
                     </Grid>
@@ -186,8 +209,15 @@ const MovieDetail = () => {
             {posterImages.data && (
                 <ImageCarousel title={imageTypes["POSTER"]} images={posterImages.data.items} />
             )}
+            {YouTubeUrl && (
+                <Stack alignItems='center' justifyContent='center' py={2}>
+                    <div ref={trailerRef}>
+                        <TrailerPlayer videoUrl={YouTubeUrl}/>
+                    </div>
+                </Stack>
+            )}
         </Stack>
-    );
+);
 };
 
 export default MovieDetail;

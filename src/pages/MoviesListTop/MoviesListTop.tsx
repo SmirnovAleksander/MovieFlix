@@ -2,10 +2,11 @@ import {useGetFilmsTopQuery} from "../../services/kinopoiskApi.ts";
 import {useEffect, useState} from "react";
 import {TopList} from "../../constants/constants.ts";
 import {useLocation, useNavigate} from "react-router-dom";
-import {Button, Stack, Typography} from "@mui/material";
+import {IconButton, Stack, Typography} from "@mui/material";
 import MoviesList from "../../components/MoviesList";
 import ErrorMessage from "../../components/ErrorMessage";
 import MoviesListSkeleton from "../../components/MoviesListSkeleton";
+import {ArrowBack} from "@mui/icons-material";
 
 const MoviesListTop = () => {
     const location = useLocation();
@@ -26,9 +27,11 @@ const MoviesListTop = () => {
     if (isLoading) return <MoviesListSkeleton/>;
     return (
         <>
-            <Stack flexDirection="row" py={1}>
-                <Button onClick={() => navigate(-1)}>Назад</Button>
-                <Typography variant="h6" component="div">{movieType.title}</Typography>
+            <Stack flexDirection="row" alignItems='center' py={1} >
+                <IconButton onClick={() => navigate(-1)}>
+                    <ArrowBack/>
+                </IconButton>
+                <Typography variant="h6" px={1}>{movieType.title}</Typography>
             </Stack>
             <MoviesList movies={data?.items || []} totalPages={data?.totalPages || 0} page={page} setPage={setPage} />
         </>
