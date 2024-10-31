@@ -12,20 +12,20 @@ import {TrailerData} from "../app/ApiTypes/FilmTrailersApi.types.ts";
 const excludeGenres = [
     ""
 ]
-
 export const kinopoiskApi = createApi({
     reducerPath: 'kinopoiskApi',
     baseQuery: fetchBaseQuery({
         baseUrl: 'https://kinopoiskapiunofficial.tech/api',
         prepareHeaders: headers => {
-            headers.set('X-API-KEY', '1b900727-d411-41a7-b5f4-80f7d54d985d')
+            headers.set('X-API-KEY', '21e6bd31-a673-404e-9c38-f902017dc168')
             // '73d4ab20-9100-4d3d-b0d5-72acaf3a4d5d'
             // '879c5663-4b59-4718-b205-6285fa1d4d40'
             // '1b900727-d411-41a7-b5f4-80f7d54d985d'
             // 'c6c7bde6-9691-4b8a-90c4-0065e1bf5f12'
             // '1b64ce6c-a0b7-46d7-97f2-8b09e8c498a3'
+            // '21e6bd31-a673-404e-9c38-f902017dc168'
             headers.set('Content-Type', 'application/json')
-        }
+        },
     }),
 
     endpoints: (builder) => ({
@@ -41,6 +41,7 @@ export const kinopoiskApi = createApi({
                 }
                 return response;
             },
+            keepUnusedDataFor: 60 * 5,
         }),
         getFilms: builder.query<FilmsItems, FilmsItemsQueryParams>({
             query: ({countries, genreId, order = 'NUM_VOTE', type = 'FILM', year, page, keyword = ''}) =>
@@ -57,7 +58,25 @@ export const kinopoiskApi = createApi({
         }),
         getFilmInfo: builder.query<FilmInfo, {id: string}>({
             query: ({id}) =>
-                `/v2.2/films/${id}`
+                `/v2.2/films/${id}`,
+            transformResponse: (response: FilmInfo): Partial<FilmInfo> => {
+                return {
+                    posterUrl: response.posterUrl,
+                    nameRu: response.nameRu,
+                    webUrl: response.webUrl,
+                    imdbId: response.imdbId,
+                    year: response.year,
+                    countries: response.countries,
+                    genres: response.genres,
+                    filmLength: response.filmLength ?? null,
+                    ratingKinopoisk: response.ratingKinopoisk ?? null,
+                    ratingImdb: response.ratingImdb ?? null,
+                    description: response.description ?? null,
+                    nameEn: response.nameEn ?? null,
+                    kinopoiskId: response.kinopoiskId,
+                    posterUrlPreview: response.posterUrlPreview
+                };
+            }
         }),
         getSequelsAndPrequels: builder.query<SequelsAndPrequels, {id: string}>({
             query: ({id}) =>
@@ -77,17 +96,19 @@ export const kinopoiskApi = createApi({
         }),
         getFilmImages:  builder.query<FilmImagesCollection, FilmImagesQueryParams>({
             query: ({id, type, page}) =>
-                `/v2.2/films/${id}/images?type=${type}&page=${page}`
+                `/v2.2/films/${id}/images?type=${type}&page=${page}`,
+
         }),
         getFilmTrailer:  builder.query<TrailerData, { id: string }>({
             query: ({id}) =>
                 `/v2.2/films/${id}/videos`,
-            // transformResponse: (response: TrailerData) => {
-            //     return {
-            //         ...response,
-            //         items: response.items.filter((trailer) => trailer.site === 'YOUTUBE')
-            //     };
-            // }
+            transformResponse: (response: TrailerData) => {
+                const youtubeTrailers = response.items.filter((trailer) => trailer.site === 'YOUTUBE');
+                return {
+                    ...response,
+                    items: youtubeTrailers.length > 0 ? youtubeTrailers : []
+                };
+            }
         }),
     }),
 });

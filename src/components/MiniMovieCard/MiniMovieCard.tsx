@@ -33,6 +33,7 @@ const MiniMovieCard: React.FC<MiniMovieCardProps> = ({filmId}) => {
                         }}>
                             <CardMedia
                                 component="img"
+                                loading="lazy"
                                 src={data.posterUrlPreview}
                                 alt={data.nameRu || data.nameEn || "Movie Poster"}
                                 sx={{

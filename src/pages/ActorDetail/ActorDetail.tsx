@@ -22,6 +22,7 @@ const ActorDetail = () => {
             <Grid container spacing={2}>
                 <Grid size={4} sx={{xs: 12}}>
                     <img
+                        loading="lazy"
                         src={data?.posterUrl}
                         alt={data?.nameRu}
                         width="100%"

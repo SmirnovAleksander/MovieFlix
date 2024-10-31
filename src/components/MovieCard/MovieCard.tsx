@@ -30,6 +30,7 @@ const MovieCard: React.FC<MovieCardProps> = ({movie}) => {
                         }}>
                             <CardMedia
                                 component="img"
+                                loading="lazy"
                                 src={movie.posterUrlPreview}
                                 alt={movie.nameRu || movie.nameEn || "Movie Poster"}
                                 sx={{
