@@ -33,7 +33,7 @@ const ActorDetail = () => {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid size={6} sx={{sm: 12}}>
+                <Grid size={8} sx={{sm: 12}}>
                     <Grid container>
                         <Grid size={1}>
                             <IconButton onClick={() => navigate(-1)}>

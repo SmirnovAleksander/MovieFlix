@@ -4,7 +4,6 @@ interface TrailerPlayerProps {
     videoUrl: string
 }
 const TrailerPlayer: React.FC<TrailerPlayerProps> = ({videoUrl}) => {
-    console.log(videoUrl)
     return (
         <ReactPlayer
             url={videoUrl}
@@ -12,6 +11,11 @@ const TrailerPlayer: React.FC<TrailerPlayerProps> = ({videoUrl}) => {
             height="450px"
             autoPlay={true}
             controls={true}
+            // config={{
+            //     youtube: {
+            //         playerVars: { showinfo: 1 }
+            //     }
+            // }}
         />
     );
 };

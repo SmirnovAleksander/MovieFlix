@@ -2,39 +2,53 @@ import {
     useGetFilmImagesQuery,
     useGetFilmInfoQuery, useGetFilmTrailerQuery,
     useGetSequelsAndPrequelsQuery,
-    useGetStuffQuery
+    useGetStuffQuery, useLazyGetFilmReviewsQuery
 } from "../../services/kinopoiskApi.ts";
 import {useNavigate, useParams} from "react-router-dom";
 import ErrorMessage from "../../components/ErrorMessage";
 import LoadingElement from "../../components/LoadingElement";
-import {Box, Button, ButtonGroup, IconButton, Stack, Typography} from "@mui/material";
+import {Box, Button, ButtonGroup, IconButton, LinearProgress, Stack, Typography} from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import {ArrowBack, Language, Movie as MovieIcon} from "@mui/icons-material";
 import MovieCreationOutlinedIcon from '@mui/icons-material/MovieCreationOutlined';
 import MovieCard from "../../components/MovieCard";
-import VideoPlayer from "../../components/VideoPlayer";
 import ImageCarousel from "../../components/ImageCarousel";
 import TrailerPlayer from "../../components/TrailerPlayer";
-import {useContext, useRef} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import {ColorModeContext} from "../../components/context/ToggleColorMod.tsx";
 import ActorMiniCard from "../../components/ActorMiniCard";
+import VideoPlayer from "../../components/VideoPlayer";
 
 const MovieDetail = () => {
     const navigate = useNavigate();
     const {id} = useParams();
     const trailerRef = useRef<HTMLDivElement>(null)
+    const reviewRef = useRef<HTMLDivElement>(null)
     const scrollToTrailer = () => {
         trailerRef.current?.scrollIntoView({ behavior: "smooth" });
     };
+    const scrollToReviews = () => {
+        reviewRef.current?.scrollIntoView({behavior: 'smooth'});
+    }
+    const [isLoad, setIsLoad] = useState(false)
     const responseFilmInfo = useGetFilmInfoQuery({id: id!});
     const responseSequelsAndPrequels = useGetSequelsAndPrequelsQuery({id: id!});
     const responseFilmStuff = useGetStuffQuery({id: id!});
     const responseFilmTrailers = useGetFilmTrailerQuery({id: id!})
+    const [triggerGetReviews, responseFilmReviews] = useLazyGetFilmReviewsQuery()
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            triggerGetReviews({ id: id!, page: 1, order: 'DATE_DESC' });
+            setIsLoad(true)
+        }, 4000);
+
+        return () => clearTimeout(timer);
+    }, [id, triggerGetReviews]);
     const stillImages = useGetFilmImagesQuery({ id: id!, page: 1, type: 'STILL' });
     const shootingImages = useGetFilmImagesQuery({ id: id!, page: 1, type: 'SHOOTING' });
     const posterImages = useGetFilmImagesQuery({ id: id!, page: 1, type: 'POSTER' });
-    console.log(responseFilmInfo.data)
-    console.log(responseFilmStuff.data)
+
     const directorStuff = responseFilmStuff.data?.filter(el => el.professionKey === 'DIRECTOR')
     const actorsStuff = responseFilmStuff.data?.filter(el => el.professionKey === 'ACTOR')
     const toggleColor = useContext(ColorModeContext);
@@ -47,7 +61,8 @@ const MovieDetail = () => {
         stillImages.error &&
         shootingImages.error &&
         posterImages.error &&
-        responseFilmTrailers.error
+        responseFilmTrailers.error &&
+        responseFilmReviews.error
     ) return <ErrorMessage/>;
     if (responseFilmInfo.isLoading ||
         responseSequelsAndPrequels.isLoading ||
@@ -173,7 +188,9 @@ const MovieDetail = () => {
                                 </Grid>
                             </>
                         ) : <Typography variant="body2">Описание отсутствует(api)</Typography>}
-
+                        <Button variant="outlined" size='small' onClick={scrollToReviews}>
+                            Посмотреть отзывы
+                        </Button>
                     </Grid>
                 </Grid>
                 <Grid size={2.5} container direction="column" sx={{sm: 12}}>
@@ -241,6 +258,30 @@ const MovieDetail = () => {
                     </div>
                 </Stack>
             )}
+            <div ref={reviewRef}>
+                {!isLoad ? (
+                    <Box sx={{ width: '100%'}} py={2}>
+                        <LinearProgress color="success"/>
+                    </Box>
+                ) : (
+                    <Stack spacing={2} mt={4} alignItems="center">
+                        <Typography variant="h6">Отзывы</Typography>
+                        {responseFilmReviews.data && responseFilmReviews.data.items.map((review) => (
+                            <Box key={review.kinopoiskId} sx={{ border: '1px solid #ccc', borderRadius: 1, padding: 2, width: '100%' }}>
+                                <Typography variant="subtitle1">{review.author}</Typography>
+                                <Typography variant="body2" color="text.secondary">{review.date}</Typography>
+                                <Typography variant="body1" gutterBottom>{review.title}</Typography>
+                                <Typography variant="body2">{review.description}</Typography>
+                                <Stack display="flex" paddingTop={1} spacing={1} direction='row'>
+                                    <Typography variant="caption" color="green">👍 {review.positiveRating}</Typography>
+                                    <Typography variant="caption" color="red">👎 {review.negativeRating}</Typography>
+                                </Stack>
+                            </Box>
+                        ))}
+                    </Stack>
+                )}
+            </div>
+
         </Stack>
 );
 };

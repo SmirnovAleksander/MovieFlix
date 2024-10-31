@@ -8,6 +8,7 @@ import {StaffMembers} from "../app/ApiTypes/StaffMembersApi.types.ts";
 import {PersonInfo} from "../app/ApiTypes/StaffMemberInfoApi.types.ts";
 import {FilmImagesCollection, FilmImagesQueryParams} from "../app/ApiTypes/FilmImagesApi.types.ts";
 import {TrailerData} from "../app/ApiTypes/FilmTrailersApi.types.ts";
+import {ReviewsQueryParams, ReviewsResponse} from "../app/ApiTypes/FilmItemReviews.types.ts";
 
 const excludeGenres = [
     ""
@@ -17,7 +18,7 @@ export const kinopoiskApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: 'https://kinopoiskapiunofficial.tech/api',
         prepareHeaders: headers => {
-            headers.set('X-API-KEY', '21e6bd31-a673-404e-9c38-f902017dc168')
+            headers.set('X-API-KEY', '73d4ab20-9100-4d3d-b0d5-72acaf3a4d5d')
             // '73d4ab20-9100-4d3d-b0d5-72acaf3a4d5d'
             // '879c5663-4b59-4718-b205-6285fa1d4d40'
             // '1b900727-d411-41a7-b5f4-80f7d54d985d'
@@ -110,6 +111,10 @@ export const kinopoiskApi = createApi({
                 };
             }
         }),
+        getFilmReviews:  builder.query<ReviewsResponse, ReviewsQueryParams>({
+            query: ({id, page, order}) =>
+                `/v2.2/films/${id}/reviews?page=${page}&order=${order}`,
+        }),
     }),
 });
 
@@ -122,5 +127,6 @@ export const {
     useGetStuffQuery,
     useGetStuffInfoQuery,
     useGetFilmImagesQuery,
-    useGetFilmTrailerQuery
+    useGetFilmTrailerQuery,
+    useLazyGetFilmReviewsQuery
 } = kinopoiskApi
