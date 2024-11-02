@@ -9,6 +9,8 @@ import {PersonInfo} from "../app/ApiTypes/StaffMemberInfoApi.types.ts";
 import {FilmImagesCollection, FilmImagesQueryParams} from "../app/ApiTypes/FilmImagesApi.types.ts";
 import {TrailerData} from "../app/ApiTypes/FilmTrailersApi.types.ts";
 import {ReviewsQueryParams, ReviewsResponse} from "../app/ApiTypes/FilmItemReviews.types.ts";
+import {StreamingPlatforms} from "../app/ApiTypes/ExternalPlatformsApi.types.ts";
+import {SimilarFilms} from "../app/ApiTypes/SimilarFilmsApi.types.ts";
 
 const excludeGenres = [
     ""
@@ -25,6 +27,7 @@ export const kinopoiskApi = createApi({
             // 'c6c7bde6-9691-4b8a-90c4-0065e1bf5f12'
             // '1b64ce6c-a0b7-46d7-97f2-8b09e8c498a3'
             // '21e6bd31-a673-404e-9c38-f902017dc168'
+            // 'e317ee9c-51e0-4235-a418-234d5a79f4c0'
             headers.set('Content-Type', 'application/json')
         },
     }),
@@ -115,6 +118,14 @@ export const kinopoiskApi = createApi({
             query: ({id, page, order}) =>
                 `/v2.2/films/${id}/reviews?page=${page}&order=${order}`,
         }),
+        getExternalPlatforms:  builder.query<StreamingPlatforms, { id: string; page: number }>({
+            query: ({id, page}) =>
+                `/v2.2/films/${id}/external_sources?page=${page}`,
+        }),
+        getSimilarFilms: builder.query<SimilarFilms, { id: string }>({
+            query: ({id}) =>
+                `/v2.2/films/${id}/similars`
+        }),
     }),
 });
 
@@ -128,5 +139,7 @@ export const {
     useGetStuffInfoQuery,
     useGetFilmImagesQuery,
     useGetFilmTrailerQuery,
-    useLazyGetFilmReviewsQuery
+    useLazyGetFilmReviewsQuery,
+    useGetExternalPlatformsQuery,
+    useGetSimilarFilmsQuery
 } = kinopoiskApi

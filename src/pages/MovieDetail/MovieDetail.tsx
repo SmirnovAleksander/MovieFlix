@@ -2,7 +2,9 @@ import {
     useGetFilmImagesQuery,
     useGetFilmInfoQuery, useGetFilmTrailerQuery,
     useGetSequelsAndPrequelsQuery,
-    useGetStuffQuery, useLazyGetFilmReviewsQuery
+    useGetStuffQuery, useLazyGetFilmReviewsQuery,
+    useGetExternalPlatformsQuery,
+    useGetSimilarFilmsQuery
 } from "../../services/kinopoiskApi.ts";
 import {useNavigate, useParams} from "react-router-dom";
 import ErrorMessage from "../../components/ErrorMessage";
@@ -36,6 +38,8 @@ const MovieDetail = () => {
     const responseFilmStuff = useGetStuffQuery({id: id!});
     const responseFilmTrailers = useGetFilmTrailerQuery({id: id!})
     const [triggerGetReviews, responseFilmReviews] = useLazyGetFilmReviewsQuery()
+    const responseExternalPlatforms = useGetExternalPlatformsQuery({id: id!, page: 1})
+    const responseSimilarFilms = useGetSimilarFilmsQuery({id: id!})
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -62,7 +66,9 @@ const MovieDetail = () => {
         shootingImages.error &&
         posterImages.error &&
         responseFilmTrailers.error &&
-        responseFilmReviews.error
+        responseFilmReviews.error &&
+        responseExternalPlatforms.error &&
+        responseSimilarFilms.error
     ) return <ErrorMessage/>;
     if (responseFilmInfo.isLoading ||
         responseSequelsAndPrequels.isLoading ||
@@ -70,7 +76,9 @@ const MovieDetail = () => {
         stillImages.isLoading ||
         shootingImages.isLoading ||
         posterImages.isLoading ||
-        responseFilmTrailers.isLoading
+        responseFilmTrailers.isLoading ||
+        responseExternalPlatforms.isLoading ||
+        responseSimilarFilms.isLoading
     ) return <LoadingElement/>;
     const imageTypes: Record<string, string> = {
         'STILL': "Кадры из фильма",
@@ -229,14 +237,43 @@ const MovieDetail = () => {
                 </Grid>
             </Grid>
             <Stack spacing={1} alignItems="center" justifyContent='center' color='primary'>
-                <Typography variant='h6'>Смотреть онлайн</Typography>
+                <Typography variant='h6' sx={{paddingTop: '15px'}}>Смотреть онлайн</Typography>
                 <VideoPlayer/>
             </Stack>
+            {responseExternalPlatforms.data && responseExternalPlatforms.data.items.length > 0 && (
+                <Stack spacing={1} alignItems="center" justifyContent='center' color='primary'>
+                    <Typography variant='h6' py={1}>Доступные платформы для просмотра</Typography>
+                    <Stack flexDirection='row' gap={1}>
+                        {responseExternalPlatforms.data.items.map(platform => (
+                            <Button
+                                key={platform.platform}
+                                href={platform.url}
+                                target="_blank"
+                                variant="outlined"
+                                startIcon={<img src={platform.logoUrl} alt={platform.platform} width={20} height={20} style={{borderRadius: '5px'}}/>}
+                            >
+                                {platform.platform}
+                            </Button>
+                        ))}
+                    </Stack>
+
+                </Stack>
+            )}
             {responseSequelsAndPrequels.data && (
                 <Stack alignItems="center" justifyContent='center'>
                     <Typography variant='h6' py={2}>Сиквелы и приквелы</Typography>
                     <Stack direction='row' flexWrap='wrap' alignItems="center" justifyContent='center'>
                         {responseSequelsAndPrequels.data?.map((el) => (
+                            <MovieCard movie={el} key={el.filmId} />
+                        ))}
+                    </Stack>
+                </Stack>
+            )}
+            {responseSimilarFilms.data && (
+                <Stack alignItems="center" justifyContent='center'>
+                    <Typography variant='h6' py={2}>Похожие фильмы</Typography>
+                    <Stack direction='row' flexWrap='wrap' alignItems="center" justifyContent='center'>
+                        {responseSimilarFilms.data.items.map((el) => (
                             <MovieCard movie={el} key={el.filmId} />
                         ))}
                     </Stack>
@@ -281,9 +318,8 @@ const MovieDetail = () => {
                     </Stack>
                 )}
             </div>
-
         </Stack>
-);
+    );
 };
 
 export default MovieDetail;

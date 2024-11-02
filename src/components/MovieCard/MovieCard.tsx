@@ -7,20 +7,21 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import CardActionArea from '@mui/material/CardActionArea';
+import {SimilarFilmItem} from "../../app/ApiTypes/SimilarFilmsApi.types.ts";
 
 interface MovieCardProps {
-    movie: FilmItemCollection | FilmItem | SequelAndPrequel;
+    movie: FilmItemCollection | FilmItem | SequelAndPrequel | SimilarFilmItem;
 }
 
 const MovieCard: React.FC<MovieCardProps> = ({movie}) => {
     const hasRating = 'ratingKinopoisk' in movie && movie.ratingKinopoisk !== null;
     const cardHeight = 320;
-
+    const filmId = 'kinopoiskId' in movie ? movie.kinopoiskId : movie.filmId
     return (
-        <Stack key={movie.kinopoiskId} m={0.5}>
+        <Stack key={filmId} m={0.5}>
             <Card sx={{ width: 215}} >
                 <CardActionArea>
-                    <Link to={`/movie/${movie.kinopoiskId}`}>
+                    <Link to={`/movie/${filmId}`}>
                         <Box sx={{
                             height: cardHeight,
                             display: 'flex',
