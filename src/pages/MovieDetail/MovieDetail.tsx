@@ -301,21 +301,23 @@ const MovieDetail = () => {
                         <LinearProgress color="success"/>
                     </Box>
                 ) : (
-                    <Stack spacing={2} mt={4} alignItems="center">
-                        <Typography variant="h6">Отзывы</Typography>
-                        {responseFilmReviews.data && responseFilmReviews.data.items.map((review) => (
-                            <Box key={review.kinopoiskId} sx={{ border: '1px solid #ccc', borderRadius: 1, padding: 2, width: '100%' }}>
-                                <Typography variant="subtitle1">{review.author}</Typography>
-                                <Typography variant="body2" color="text.secondary">{review.date}</Typography>
-                                <Typography variant="body1" gutterBottom>{review.title}</Typography>
-                                <Typography variant="body2">{review.description}</Typography>
-                                <Stack display="flex" paddingTop={1} spacing={1} direction='row'>
-                                    <Typography variant="caption" color="green">👍 {review.positiveRating}</Typography>
-                                    <Typography variant="caption" color="red">👎 {review.negativeRating}</Typography>
-                                </Stack>
-                            </Box>
-                        ))}
-                    </Stack>
+                    responseFilmReviews.data && responseFilmReviews.data.items.length > 0 ? (
+                        <Stack spacing={2} mt={4} alignItems="center">
+                            <Typography variant="h6">Отзывы</Typography>
+                            {responseFilmReviews.data && responseFilmReviews.data.items.map((review) => (
+                                <Box key={review.kinopoiskId} sx={{ border: '1px solid #ccc', borderRadius: 1, padding: 2, width: '100%' }}>
+                                    <Typography variant="subtitle1">{review.author}</Typography>
+                                    <Typography variant="body2" color="text.secondary">{review.date}</Typography>
+                                    <Typography variant="body1" gutterBottom>{review.title}</Typography>
+                                    <Typography variant="body2">{review.description}</Typography>
+                                    <Stack display="flex" paddingTop={1} spacing={1} direction='row'>
+                                        <Typography variant="caption" color="green">👍 {review.positiveRating}</Typography>
+                                        <Typography variant="caption" color="red">👎 {review.negativeRating}</Typography>
+                                    </Stack>
+                                </Box>
+                            ))}
+                        </Stack>
+                    ) : null
                 )}
             </div>
         </Stack>
